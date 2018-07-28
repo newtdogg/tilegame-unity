@@ -39,9 +39,9 @@ public class GameController : MonoBehaviour {
 		earthScore = 5;
 		waterScore = 5;
 		airScore = 5;
-		rowSize = 7;
-		for(int x = ((rowSize - 1) / 2) - 1; x < ((rowSize - 1) / 2) + 2; x++){
-			for(int y = ((rowSize - 1) / 2) - 1; y < ((rowSize - 1) / 2) + 2; y++){
+		rowSize = 5;
+		for(int x = 1; x < rowSize + 1; x++){
+			for(int y = 1; y < rowSize + 1; y++){
 				tileIndexString = $"{x}{y}";
 				baseTile = GameObject.Find("BaseTile");
 				newTile = Instantiate(baseTile);
@@ -50,6 +50,7 @@ public class GameController : MonoBehaviour {
 				newTile.GetComponent<GameTile>().yPosition = y;
 				newTile.GetComponent<GameTile>().xyCoords = tileIndexString;
 				newTile.GetComponent<GameTile>().initialize();
+				newTile.GetComponent<GameTile>().allTiles = allTiles;
 				newTile.transform.position = new Vector3(x * 10.2f, 0f, y * 10.2f);
 				tilesIndexes.Add(tileIndexString, newTile);
 				allTiles.Add(newTile);
@@ -84,25 +85,29 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	void setAdjacentTiles(){
+	public void setAdjacentTiles(){
 		for(int x = 0; x < allTiles.Count; x++){
 			currentTile = allTiles[x].GetComponent<GameTile>();
 			coords = currentTile.xyCoords;
 			nwCoords = int.Parse(coords) + 1;
 			if (tilesIndexes.ContainsKey($"{nwCoords}")) {
 				currentTile.nwTile = tilesIndexes[$"{nwCoords}"];
+				currentTile.adjacentTiles.Add(currentTile.nwTile);
 			}
 			neCoords = int.Parse(coords) + 10;
 			if (tilesIndexes.ContainsKey($"{neCoords}")) {
-				currentTile.nwTile = tilesIndexes[$"{neCoords}"];
+				currentTile.neTile = tilesIndexes[$"{neCoords}"];
+				currentTile.adjacentTiles.Add(currentTile.neTile);
 			}
 			seCoords = int.Parse(coords) - 1;
 			if (tilesIndexes.ContainsKey($"{seCoords}")) {
-				currentTile.nwTile = tilesIndexes[$"{seCoords}"];
+				currentTile.seTile = tilesIndexes[$"{seCoords}"];
+				currentTile.adjacentTiles.Add(currentTile.seTile);
 			}
 			swCoords = int.Parse(coords) - 10;
 			if (tilesIndexes.ContainsKey($"{swCoords}")) {
-				currentTile.nwTile = tilesIndexes[$"{swCoords}"];
+				currentTile.swTile = tilesIndexes[$"{swCoords}"];
+				currentTile.adjacentTiles.Add(currentTile.swTile);
 			}
 		}
 	}
